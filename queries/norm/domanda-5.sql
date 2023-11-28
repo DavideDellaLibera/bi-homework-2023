@@ -18,7 +18,7 @@ CREATE VIEW IF NOT EXISTS query5_fast_studenti AS
 DROP VIEW IF EXISTS query5_furious_studenti;
 CREATE VIEW IF NOT EXISTS query5_furious_studenti AS	
 
-	/* NUMBER OF PASSED EXAMS, AVERAGE GRADE AND SUCCESS RATIO (n° passed exams / n° enrollments) FOR EACH STUDENT */
+	/* NUMBER OF PASSED EXAMS, AVERAGE GRADE AND SUCCESS RATIO FOR EACH STUDENT */
 	SELECT t1.cdscod, t1.studente, t1.n_esami_superati, (CASE WHEN t1.voto_medio IS NULL THEN 0 ELSE t1.voto_medio END) AS voto_medio,
 		CAST((CAST(t1.n_esami_superati AS REAL) / CAST(n_iscrizioni AS REAL)) AS REAL) AS tasso_successo
 	FROM (
