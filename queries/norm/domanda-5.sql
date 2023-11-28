@@ -1,10 +1,11 @@
 
 /* DOMANDA 5 - NORM */
 
-/* VIEW: MESI (PERIODO) ATTIVITA STUDENTI (FAST) */
+/* VIEW: FAST PARAMETER */
 DROP VIEW IF EXISTS query5_fast_studenti;
 CREATE VIEW IF NOT EXISTS query5_fast_studenti AS
 
+	/* PERIOD OF ACTIVITY: DIFFERENCE BETWEEN FIRST AND LAST EXAM TAKEN BY EACH STUDENT */
 	SELECT appelli.cdscod, iscrizioni.studente, 
 		CAST(ROUND((JULIANDAY(DATE(MAX(dtappello), 'start of month')) - JULIANDAY(DATE(MIN(dtappello), 'start of month'))) / 30) + 1 AS INTEGER) AS mesi_att
 	FROM iscrizioni
@@ -13,14 +14,16 @@ CREATE VIEW IF NOT EXISTS query5_fast_studenti AS
 	GROUP BY appelli.cdscod, iscrizioni.studente;
 
 	
-/* VIEW: PARAMETRI FURIOUS */
+/* VIEW: FURIOUS PARAMETERS */
 DROP VIEW IF EXISTS query5_furious_studenti;
 CREATE VIEW IF NOT EXISTS query5_furious_studenti AS	
 
+	/* NUMBER OF PASSED EXAMS, AVERAGE GRADE AND SUCCESS RATIO (n° passed exams / n° enrollments) FOR EACH STUDENT */
 	SELECT t1.cdscod, t1.studente, t1.n_esami_superati, (CASE WHEN t1.voto_medio IS NULL THEN 0 ELSE t1.voto_medio END) AS voto_medio,
 		CAST((CAST(t1.n_esami_superati AS REAL) / CAST(n_iscrizioni AS REAL)) AS REAL) AS tasso_successo
 	FROM (
 
+		/* NUMBER OF PASSED EXAMS, ENROLLMENTS AND AVERAGE GRADE FOR EACH STUDENT */
 		SELECT appelli.cdscod, iscrizioni.studente, SUM(CASE WHEN iscrizioni.Superamento = 1 THEN 1 ELSE 0 END) AS n_esami_superati,
 			COUNT(*) AS n_iscrizioni, ROUND(AVG(iscrizioni.voto), 3) AS voto_medio	
 		FROM iscrizioni
@@ -31,14 +34,16 @@ CREATE VIEW IF NOT EXISTS query5_furious_studenti AS
 	) AS t1;
 	
 
-/* VIEW: FAST AND FURIOUS STUDENTI */
+/* VIEW: STUDENTS FAST AND FURIOUS */
 DROP VIEW IF EXISTS query5_fast_and_furious;
 CREATE VIEW IF NOT EXISTS query5_fast_and_furious AS
 
+	/* WEIGHTING ALL THE NORMALIZED PARAMETERS TO COMPUTE THE F&F INDEX */
 	SELECT t1.*, 
 		ROUND(t1.mesi_att_norm * 0.25 + t1.tasso_successo * 0.25 + t1.voto_medio_norm * 0.25 + t1.n_esami_superati_norm * 0.25, 3) AS fast_and_furious
 	FROM (
 
+		/* NORMALIZATION OF ALL PARAMETERS USING MIN-MAX NORMALIZATION  */
 		SELECT query5_furious_studenti.cdscod, query5_furious_studenti.studente,
 			query5_furious_studenti.tasso_successo,
 			query5_furious_studenti.voto_medio, query5_furious_studenti.voto_medio / 30 AS voto_medio_norm,
