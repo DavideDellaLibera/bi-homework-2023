@@ -1,9 +1,8 @@
 
 /* QUERY 1 - DENORM */
 
-/* VIEW: NUMERO DI APPELLI ED ISCRIZIONI PER CORSO DI LAUREA ED ATTIVITA DIDATTICA */
-DROP VIEW IF EXISTS query1_denorm_cds_ad_appelli_iscrizioni;
-CREATE VIEW IF NOT EXISTS query1_denorm_cds_ad_appelli_iscrizioni AS
+/* NUMERO DI APPELLI ED ISCRIZIONI PER CORSO DI LAUREA ED ATTIVITA DIDATTICA */
+WITH cds_ad_appelli_iscrizioni AS (
 
 	SELECT t2.*, t3.numero_iscrizioni, ROUND(CAST(t3.numero_iscrizioni AS REAL) / CAST(t2.numero_appelli AS REAL), 3) AS media_iscrizioni_appello
 	FROM (
@@ -28,16 +27,14 @@ CREATE VIEW IF NOT EXISTS query1_denorm_cds_ad_appelli_iscrizioni AS
 
 	) AS t3 ON t3.cdscod = t2.cdscod
 		AND t3.adcod = t2.adcod	
-		AND t3.anno = t2.anno;
+		AND t3.anno = t2.anno
 
+)
 
-/* VIEW: NUMERO DI APPELLI ED ISCRIZIONI PER CORSO DI LAUREA */
-DROP VIEW IF EXISTS query1_denorm_cds_appelli_iscrizioni;
-CREATE VIEW IF NOT EXISTS query1_denorm_cds_appelli_iscrizioni AS
-
-	SELECT cdscod, anno, SUM(numero_appelli) AS numero_appelli, SUM(numero_iscrizioni) AS numero_iscrizioni, 
-		ROUND(CAST(SUM(numero_iscrizioni) AS REAL) / CAST(SUM(numero_appelli) AS REAL), 3) AS media_iscrizioni_appello
-	FROM query1_denorm_cds_ad_appelli_iscrizioni	
-	GROUP BY cdscod, anno;
+/* NUMERO DI APPELLI ED ISCRIZIONI PER CORSO DI LAUREA */
+SELECT cdscod, anno, SUM(numero_appelli) AS numero_appelli, SUM(numero_iscrizioni) AS numero_iscrizioni, 
+	ROUND(CAST(SUM(numero_iscrizioni) AS REAL) / CAST(SUM(numero_appelli) AS REAL), 3) AS media_iscrizioni_appello
+FROM cds_ad_appelli_iscrizioni	
+GROUP BY cdscod, anno;
 		
 	
