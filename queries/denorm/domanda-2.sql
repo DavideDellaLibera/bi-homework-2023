@@ -1,6 +1,7 @@
 
 /* QUERY 2 - DENORM */
 
+/* DIFFICULTY STATS FOR EACH EXAM (CLOSED) */
 WITH app_difficulty AS (
 
 	SELECT t1.*, 
@@ -46,9 +47,9 @@ WITH app_difficulty AS (
 		
 ),
 
+/* AVERAGE NUMBER OF TRIES OF EACH AD */
 media_tentativi_stud_ad AS (
 
-	/* MEDIA TENTATIVI PER STUDENTE PER ATTIVITA DIDATTICA */
 	SELECT t1.cdscod, t1.adcod, ROUND(AVG(t1.numero_tentativi), 3) AS media_tentativi
 	FROM (
 		SELECT studente, cdscod, adcod, COUNT(*) AS numero_tentativi
@@ -60,9 +61,9 @@ media_tentativi_stud_ad AS (
 
 ),
 
+/* MEDIAN SUCCESS RATIO FOR EACH AD */
 ts_mediano_ad AS (
 	
-	/* TASSO SUPERAMENTO MEDIANO DEL AD */
 	SELECT ranking.cdscod, ranking.adcod, ROUND(AVG(ranking.tasso_superamento), 3) AS ts_mediano
 	FROM (
 		SELECT *,
@@ -75,9 +76,9 @@ ts_mediano_ad AS (
 
 ),
 
+/* MEDIAN AGGREGATED GRADE FOR EACH AD */
 voto_agg_mediano_ad AS (
 	
-	/* VOTO AGGREGATO MEDIANO DEL AD */
 	SELECT ranking.cdscod, ranking.adcod, ROUND(AVG(ranking.voto_agg), 3) AS voto_agg_mediano
 	FROM (
 		SELECT *,
@@ -93,6 +94,7 @@ voto_agg_mediano_ad AS (
 	
 ),
 
+/* NUMBER OF EXAMS FOR EACH AD (AT LEAST 2 EXAMS TO BE CONSIDERED) */
 numero_appelli_ad AS (
 
 	SELECT app_difficulty.cdscod, app_difficulty.adcod, COUNT(*) AS numero_appelli
@@ -102,6 +104,7 @@ numero_appelli_ad AS (
 
 )
 
+/* RANKING ALGORITHM */
 SELECT *
 FROM (
 

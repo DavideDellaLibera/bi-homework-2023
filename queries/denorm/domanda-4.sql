@@ -1,7 +1,7 @@
 
 /* DOMANDA 4 - DENORM */
 
-/* NUMERO APPELLI PER AD */
+/* NUMBER OF EXAMS PER AD */
 WITH n_appelli_ad AS (
 
 	SELECT t1.cdscod, t1.adcod, COUNT(*) AS numero_appelli
@@ -15,7 +15,7 @@ WITH n_appelli_ad AS (
 
 ),
 
-/* VOTO MEDIO PER AD */
+/* AVERAGE GRADE FOR AD */
 voto_medio_ad AS (
 	
 	SELECT cdscod, adcod, AVG(voto) AS voto_medio
@@ -25,7 +25,7 @@ voto_medio_ad AS (
 
 ),
 
-/* NUMERO ISCRITTI MEDIO PER CIASCUN APPELLO */	
+/* AVERAGE NUMBER OF ENROLLMENTS FOR EACH EXAM OF EACH AD */	
 n_iscrizioni_medio AS (
 
 	SELECT t1.cdscod, t1.adcod, AVG(t1.numero_iscritti) AS n_iscrizioni_media
@@ -43,7 +43,7 @@ n_iscrizioni_medio AS (
 	
 ),
 
-/* RAPPORTO PROMOSSI ED ISCRITTI */
+/* RATIO PASSED AND ENROLLED STUDENTS FOR EACH AD */
 rapporto_promossi_iscritti AS (
 
 	SELECT t1.cdscod, t1.adcod, 
@@ -60,7 +60,7 @@ rapporto_promossi_iscritti AS (
 	
 )
 
-/* RANK VOTO MEDIO */
+/* DIFFICULTY SCORE RANKING */
 SELECT *
 FROM (
 

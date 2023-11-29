@@ -1,7 +1,7 @@
 
-/* DOMANDA 6 - NORM */
+/* DOMANDA 6 - DENORM */
 
-/* TRIAL&ERROR PER STUDENTE PER AD */
+/* STUDENTS STATS AND TRIAL/ERROR INDEX FOR EACH AD */
 WITH trial_error_stud_ad AS (
 	
 	SELECT cdscod, adcod, studente,
@@ -20,6 +20,7 @@ WITH trial_error_stud_ad AS (
 
 )
 
+/* TRIAL&ERROR INDEX FOR AD */
 SELECT *
 FROM (
 
