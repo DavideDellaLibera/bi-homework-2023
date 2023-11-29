@@ -4,6 +4,7 @@
 Altieri Mariarosaria, Della Libera Davide and Longoni Letizia
 
 DB and SQL Code on GitHub: https://github.com/DavideDellaLibera/bi-homework-2023
+
 Dashboard and Visualizations on Tableau: https://public.tableau.com/app/profile/letizia5214/viz/BIproject_17012907139470/Appelli
 
 **GitHub Folder Structure**
@@ -25,7 +26,7 @@ Dashboard and Visualizations on Tableau: https://public.tableau.com/app/profile/
 	- table-stats-appelli.sql: SQL code to compute all the statistic related to exams.
 
 **Reproducibility**
-Starting from the already processed database:
+Starting from the already processed database:\
 1- Download and open the _db_only_processed_
 2- Query the database, using the SQL code contained in the _queries_ folder
 
