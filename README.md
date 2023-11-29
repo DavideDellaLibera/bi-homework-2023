@@ -1,7 +1,7 @@
 # UniMiB - Business Intelligence (Homework 2023) 
 
-**Group**: Le Belle e la Bestia
-Altieri Mariarosaria, Della Libera Davide and Longoni Letizia
+**Group**: Le Belle e la Bestia\
+_Altieri Mariarosaria, Della Libera Davide and Longoni Letizia_
 
 DB and SQL Code on GitHub: https://github.com/DavideDellaLibera/bi-homework-2023 \
 Dashboard and Visualizations on Tableau: https://public.tableau.com/app/profile/letizia5214/viz/BIproject_17012907139470/Appelli
