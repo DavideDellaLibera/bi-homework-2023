@@ -1,6 +1,6 @@
 # bi-homework-2023
 
-Visualizations on Tableau: https://public.tableau.com/app/profile/letizia5214/viz/BI1_211112/Overview
+Visualizations on Tableau: https://public.tableau.com/app/profile/letizia5214/viz/BIproject_17012907139470/Appelli
 
 Code on GitHub: https://github.com/DavideDellaLibera/bi-homework-2023
 
