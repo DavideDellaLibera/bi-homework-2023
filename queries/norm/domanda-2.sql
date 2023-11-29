@@ -5,8 +5,7 @@
 DROP VIEW IF EXISTS query2_app_difficulty;
 CREATE VIEW IF NOT EXISTS query2_app_difficulty AS
 
-	SELECT stats_appelli.appcod, stats_appelli.cdscod, stats_appelli.adcod, 
-		stats_appelli.numero_iscritti, stats_appelli.tasso_superamento, 
+	SELECT stats_appelli.appcod, stats_appelli.cdscod, stats_appelli.adcod, stats_appelli.tasso_superamento, 
 		
 		/* IMPLEMENTATION OF AGGREGATED GRADE ALGORITHM */
 		CASE WHEN stats_appelli.voto_medio IS NOT NULL AND stats_appelli.voto_mediano IS NULL
@@ -20,7 +19,7 @@ CREATE VIEW IF NOT EXISTS query2_app_difficulty AS
 	WHERE stats_appelli.appello_chiuso = 1;
 
 	
-/* VIEW: AVERAGE NUMBER OF TRIES OF EACH STUDENT */
+/* VIEW: AVERAGE NUMBER OF TRIES OF EACH AD */
 DROP VIEW IF EXISTS query2_ad_media_tentativi;
 CREATE VIEW IF NOT EXISTS query2_ad_media_tentativi AS
 
@@ -140,4 +139,3 @@ CREATE VIEW IF NOT EXISTS query2_rankings AS
 
 	) AS t1
 	
-

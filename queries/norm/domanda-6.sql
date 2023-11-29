@@ -1,14 +1,14 @@
 
 /* DOMANDA 6 - NORM */
 
-/* VIEW: STATISTICHE STUDENTE PER CIASCUNA ATTIVITA DIDATTICA */
+/* VIEW: STUDENTS STATS AND TRIAL/ERROR INDEX FOR EACH AD */
 DROP VIEW IF EXISTS query6_stats_stud_ad;
 CREATE VIEW IF NOT EXISTS query6_stats_stud_ad AS 
 
-	SELECT *, 
-		(CAST(t1.n_insufficienze * 1.5 + t1.n_ritiri * 1 + t1.n_assenze * 0.5 AS REAL)) AS trial_error
+	SELECT *, CAST(t1.n_insufficienze * 1.5 + t1.n_ritiri * 1 + t1.n_assenze * 0.5 AS REAL) AS trial_error
 	FROM (
 
+		/* NUMBER OF INSUFFICIENT, RETIRED AND ABSENST FOR EACH STUDENT IN AN AD */
 		SELECT appelli.cdscod, appelli.adcod, iscrizioni.studente, 
 			SUM(CASE WHEN iscrizioni.Insufficienza = 1 THEN 1 ELSE 0 END) AS n_insufficienze,
 			SUM(CASE WHEN iscrizioni.Ritiro = 1 THEN 1 ELSE 0 END) AS n_ritiri,
@@ -21,7 +21,7 @@ CREATE VIEW IF NOT EXISTS query6_stats_stud_ad AS
 	) AS t1;
 	
 
-/* VIEW: TRIAL&ERROR INDEX PER ATTIVITA DIDATTICA */
+/* VIEW: TRIAL&ERROR INDEX FOR AD */
 DROP VIEW IF EXISTS query6_trial_error_ad;
 CREATE VIEW IF NOT EXISTS query6_trial_error_ad AS
 
@@ -33,7 +33,7 @@ CREATE VIEW IF NOT EXISTS query6_trial_error_ad AS
 	HAVING n_studenti > 2;
 
 
-/* VIEW: TRIAL&ERROR INDEX PER CORSO DI STUDI */
+/* VIEW: TRIAL&ERROR INDEX FOR CDS */
 DROP VIEW IF EXISTS query6_trial_error_cdscod;
 CREATE VIEW IF NOT EXISTS query6_trial_error_cdscod AS
 
@@ -44,7 +44,7 @@ CREATE VIEW IF NOT EXISTS query6_trial_error_cdscod AS
 	GROUP BY query6_trial_error_ad.cdscod;
 	
 	
-/* VIEW: TOP-3 TRIAL&ERROR CDS ED AD */
+/* VIEW: TOP-3 TRIAL&ERROR CDS AND AD */
 DROP VIEW IF EXISTS query6_top3_cds_ad;
 CREATE VIEW IF NOT EXISTS query6_top3_cds_ad AS
 	

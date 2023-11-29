@@ -9,13 +9,21 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 		ROUND(ad_difficulty_params.avg_trial_error_index * 0.25 + ad_difficulty_params.avg_difficulty_index * 0.25 + fast_and_furious_index.fast_and_furious * 0.5, 3) AS gold_mortarboard_score
 	FROM (
 
-		SELECT query6_stats_stud_ad.cdscod, query6_stats_stud_ad.studente,
+		SELECT students_passed_exam.cdscod, students_passed_exam.studente,
 			ROUND(AVG(difficulty_index_ad.trial_error_index_norm), 3) AS avg_trial_error_index, 
 			ROUND(AVG(difficulty_index_ad.difficulty_index_norm), 3) AS avg_difficulty_index
-		FROM query6_stats_stud_ad
+		FROM (
+			
+			/* AD PASSED BY STUDENTS */
+			SELECT DISTINCT appelli.cdscod, appelli.adcod, iscrizioni.studente
+			FROM iscrizioni
+			INNER JOIN appelli ON appelli.appcod = iscrizioni.appcod	
+			WHERE iscrizioni.Superamento = 1
+	
+		) AS students_passed_exam
 		LEFT JOIN (
 
-			/* INDICI DIFFICOLTA DI CIASCUNA AD */
+			/* DIFFICULTY PARAMS FOR EACH AD */
 			SELECT query6_trial_error_ad.cdscod, query6_trial_error_ad.adcod, 
 				(query6_trial_error_ad.trial_error - MIN(query6_trial_error_ad.trial_error) OVER (PARTITION BY query6_trial_error_ad.cdscod)) / (MAX(query6_trial_error_ad.trial_error) OVER (PARTITION BY query6_trial_error_ad.cdscod) - MIN(query6_trial_error_ad.trial_error) OVER (PARTITION BY query6_trial_error_ad.cdscod)) AS trial_error_index_norm,
 				1 - ((query2_rankings.rank_pesato - MIN(query2_rankings.rank_pesato) OVER (PARTITION BY query6_trial_error_ad.cdscod)) / (MAX(query2_rankings.rank_pesato) OVER (PARTITION BY query6_trial_error_ad.cdscod) - MIN(query2_rankings.rank_pesato) OVER (PARTITION BY query6_trial_error_ad.cdscod))) AS difficulty_index_norm
@@ -23,10 +31,9 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 			INNER JOIN query2_rankings ON query2_rankings.cdscod = query6_trial_error_ad.cdscod
 				AND query2_rankings.adcod = query6_trial_error_ad.adcod
 				
-		) AS difficulty_index_ad ON difficulty_index_ad.cdscod = query6_stats_stud_ad.cdscod
-			AND difficulty_index_ad.adcod = query6_stats_stud_ad.adcod
-		WHERE trial_error = 0
-		GROUP BY query6_stats_stud_ad.cdscod, query6_stats_stud_ad.studente
+		) AS difficulty_index_ad ON difficulty_index_ad.cdscod = students_passed_exam.cdscod
+			AND difficulty_index_ad.adcod = students_passed_exam.adcod
+		GROUP BY students_passed_exam.cdscod, students_passed_exam.studente
 		
 	) AS ad_difficulty_params
 	LEFT JOIN (
@@ -40,7 +47,7 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 	WHERE fast_and_furious_index.n_esami_superati > 5;
 	
 
-/* VIEW: NUMERO DI PREMI PER CDS */
+/* VIEW: NUMBER OF AWARDS FOR EACH CDS (FAIRNESS) */
 DROP VIEW IF EXISTS query7_numero_premi_cds;
 CREATE VIEW IF NOT EXISTS query7_numero_premi_cds AS
 	
@@ -63,6 +70,7 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_students AS
 		rankings.gold_mortarboard_score, rankings.position
 	FROM (	
 
+		/* RANKINGS */
 		SELECT *, 
 			ROW_NUMBER() OVER (PARTITION BY query7_gold_mortarboard_scores.cdscod ORDER BY query7_gold_mortarboard_scores.gold_mortarboard_score DESC) AS position
 		FROM query7_gold_mortarboard_scores
@@ -71,5 +79,3 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_students AS
 	) AS rankings
 	WHERE rankings.position <= rankings.numero_premi;
 
-
-	

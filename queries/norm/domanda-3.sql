@@ -14,21 +14,19 @@ CREATE VIEW IF NOT EXISTS query3_commitment_rates AS
 
 		/* COMMITMENT RATE FORMULA */
 		SELECT *,
-			ROUND(0.7 * ( ( CAST(numero_date_overlap AS REAL) / CAST(numero_date AS REAL) ) * 
-			( CAST(numero_esami_date_overlap AS REAL) / CAST(numero_date_overlap AS REAL) ) ) + 
+			ROUND(0.7 * ( CAST(numero_esami_date_overlap AS REAL) / CAST(numero_date AS REAL) ) + 
 			0.3 * ( CAST(numero_ad AS REAL) / CAST(numero_appelli AS REAL) ), 3) AS commitment_rate
 		FROM (
 
 			/* PARAMS TO COMPUTE THE COMMITMENT RATE */
 			SELECT cds_commitment_count.cdscod, cds_numero_ad.numero_ad, 
 				SUM(cds_commitment_count.n_distinct_ad) AS numero_appelli,
-				SUM(CASE WHEN cds_commitment_count.n_distinct_ad > 1 THEN 1 ELSE 0 END) AS numero_date_overlap,
 				COUNT(*) AS numero_date,
 				SUM(CASE WHEN cds_commitment_count.n_distinct_ad > 1 THEN n_distinct_ad ELSE 0 END) AS numero_esami_date_overlap
 				
 			FROM (
 				
-				/* NUMBER OF DISTINCT AD FOR EACH CDS */
+				/* NUMBER OF DISTINCT AD FOR EACH DATE */
 				SELECT stats_appelli.cdscod, stats_appelli.dtappello, 
 					COUNT(DISTINCT stats_appelli.adcod) AS n_distinct_ad
 				FROM stats_appelli
