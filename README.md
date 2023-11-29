@@ -1,6 +1,7 @@
 # bi-homework-2023
 
 Visualizations on Tableau: https://public.tableau.com/app/profile/letizia5214/viz/BI1_211112/Overview
+
 Code on GitHub: https://github.com/DavideDellaLibera/bi-homework-2023
 
 Structure:
