@@ -5,10 +5,13 @@
 DROP VIEW IF EXISTS query7_gold_mortarboard_scores;
 CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 
+	/* COMPUTE THE GOLD MORTARBOARD SCORE WEIGHTING THE THREE NORMALIZED PARAMETERS  */
 	SELECT ad_difficulty_params.*, fast_and_furious_index.fast_and_furious AS fast_and_furios_index,
 		ROUND(ad_difficulty_params.avg_trial_error_index * 0.25 + ad_difficulty_params.avg_difficulty_index * 0.25 + fast_and_furious_index.fast_and_furious * 0.5, 3) AS gold_mortarboard_score
 	FROM (
 
+		/* FIRST PARAMETER: AVERAGE OF TRIAL AND ERROR INDECES (NORMALIZED)
+		   SECOND PARAMETER: AVERAGE OF DIFFICULTY INDECES (NORMALIZED) */
 		SELECT students_passed_exam.cdscod, students_passed_exam.studente,
 			ROUND(AVG(difficulty_index_ad.trial_error_index_norm), 3) AS avg_trial_error_index, 
 			ROUND(AVG(difficulty_index_ad.difficulty_index_norm), 3) AS avg_difficulty_index
@@ -38,7 +41,7 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 	) AS ad_difficulty_params
 	LEFT JOIN (
 
-		/* FAST AND FURIOUS INDEX */
+		/* THIRD PARAMETER: FAST AND FURIOUS INDEX */
 		SELECT cdscod, studente, fast_and_furious, n_esami_superati
 		FROM query5_fast_and_furious
 		
@@ -47,7 +50,7 @@ CREATE VIEW IF NOT EXISTS query7_gold_mortarboard_scores AS
 	WHERE fast_and_furious_index.n_esami_superati > 5;
 	
 
-/* VIEW: NUMBER OF AWARDS FOR EACH CDS (FAIRNESS) */
+/* VIEW: NUMBER OF AWARDS FOR EACH CDS (FAIRNESS: PROPORTIONAL TO THE NUMBER OF STUDENT IN THE CDS) */
 DROP VIEW IF EXISTS query7_numero_premi_cds;
 CREATE VIEW IF NOT EXISTS query7_numero_premi_cds AS
 	
